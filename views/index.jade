@@ -1,0 +1,30 @@
+doctype html
+html
+    head
+        title Node.js, Twitter Stream, Socket.io
+        link(rel="stylesheet" type="text/css" class="ui" href="semantic/packaged/css/semantic.css")
+        script(src="module_init.js", defer="defer")
+        script(src="http://code.jquery.com/jquery-1.9.1.min.js")
+        script(src="/socket.io/socket.io.js")
+        script(src="/javascripts/script.js")
+        script(src="https://maps.googleapis.com/maps/api/js?v=3.exp")
+        script(src="semantic.min.js")
+    body
+        .container
+            .header
+                h1 Tweets Map
+                small
+                    | This map shows where people tweet about
+                    span  "#{data.key}"
+                small
+                    i
+                        | Last updated:
+                        span(id="last-update") Never
+            div(id="map-canvas")
+            div(class="ui selection dropdown")
+                input(type="hidden" name="gender")
+                div(class="default text") Gender
+                i(class="dropdown icon")
+                div(class="menu")
+                    div(class="item" data-value="1") Male
+                    div(class="item" data-value="0") Female
