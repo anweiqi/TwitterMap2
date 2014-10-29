@@ -1,5 +1,6 @@
 var exports = module.exports = {};
-var ddb = require('dynamodb').ddb({ accessKeyId: '', secretAccessKey: '' });
+var ddb = require('dynamodb').ddb({ accessKeyId: '',
+secretAccessKey: '' });
 
 exports.createDB = function(keylist) {
     var key;
