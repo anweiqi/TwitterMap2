@@ -13,8 +13,11 @@ function update(data){
     var marker = new google.maps.Marker({
         position: newTweet,
         map: map,
-        title: data.text
+        title: data.location[0]+", "+data.location[1]
     });
+    if(data.location[0]<-100){
+        console.log(data.location[0]+", "+data.location[1]);
+    }
 }
 
 function initialize() {
@@ -24,6 +27,12 @@ function initialize() {
         center: myLatlng
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    //var history_points = $("#data").val();
+    //console.log(history_points);
+    var i;
+    for(i=0; i<local_data.length; i++){
+        update(local_data[i]);
+    }
 }
 
 $('.ui.dropdown')

@@ -6,9 +6,11 @@ html
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
         script(src="/socket.io/socket.io.js")
-        script(src="/javascripts/script.js" defer="defer")
         script(src="https://maps.googleapis.com/maps/api/js?v=3.exp")
         script(src="/semantic/javascript/semantic.min.js")
+        script(type='text/javascript').
+            var local_data =!{JSON.stringify(data)};
+        script(src="/javascripts/script.js" defer="defer")
     body
         .container
             .header
