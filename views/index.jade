@@ -7,6 +7,9 @@ html
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
         script(src="/socket.io/socket.io.js")
         script(src="https://maps.googleapis.com/maps/api/js?v=3.exp")
+        script(src="/javascripts/script.js" defer="defer")
+        //script(src="https://maps.googleapis.com/maps/api/js?v=3.exp")
+        script(src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false")
         script(src="/semantic/javascript/semantic.min.js")
         script(type='text/javascript').
             var local_data =!{JSON.stringify(data)};
@@ -23,17 +26,17 @@ html
                 div(class="ui form segment")
                     div(class="field")
                         label Map Type
-                        div(class="ui selection dropdown")
+                        div(class="ui selection dropdown maptype")
                             input(type="hidden" name="maptype")
                             div(class="default text") Scatter Plot
                             i(class="dropdown icon")
-                            div(class="menu")
+                            div(class="menu") 
                                 div(class="item" data-value="1") Heat Map
                                 div(class="item" data-value="0") Scatter Plot
 
                     div(class="field")
                         label Keyword
-                        div(class="ui selection dropdown")
+                        div(class="ui selection dropdown keyword")
                             input(type="hidden" name="keyword")
                             div(class="default text") halloween
                             i(class="dropdown icon")

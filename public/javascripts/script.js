@@ -1,4 +1,7 @@
-var map;
+var map, heatmap, maptype = 0;
+var pointArray = new google.maps.MVCArray();
+var markers = []
+
 $(document).ready(function() {
     google.maps.event.addDomListener(window, 'load', initialize);
     socket = io();
@@ -12,12 +15,11 @@ function update(data){
     var newTweet = new google.maps.LatLng(data.location[0],data.location[1]);
     var marker = new google.maps.Marker({
         position: newTweet,
-        map: map,
-        title: data.location[0]+", "+data.location[1]
+        map: maptype == 0?map:null,
+        title: data.text
     });
-    if(data.location[0]<-100){
-        console.log(data.location[0]+", "+data.location[1]);
-    }
+    markers.push(marker);
+    pointArray.push(newTweet);
 }
 
 function initialize() {
@@ -35,5 +37,39 @@ function initialize() {
     }
 }
 
-$('.ui.dropdown')
-    .dropdown();
+// Sets the map on all markers in the array.
+function setAllMap(map) {
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+    }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+    setAllMap(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+    setAllMap(map);
+}
+
+
+$('.maptype').dropdown({
+    onChange: function(val){
+        if(val == 1) {
+            heatmap = new google.maps.visualization.HeatmapLayer({
+                data: pointArray
+            });
+            heatmap.setMap(map);
+            clearMarkers();
+            maptype = 1;
+        } else {
+            heatmap.setMap(null);
+            showMarkers();    
+            maptype = 0;
+        }
+    }    
+});
+
+$('.keyword').dropdown();
