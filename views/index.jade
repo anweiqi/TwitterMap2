@@ -2,29 +2,47 @@ doctype html
 html
     head
         title Node.js, Twitter Stream, Socket.io
-        link(rel="stylesheet" type="text/css" class="ui" href="semantic/packaged/css/semantic.css")
-        script(src="module_init.js", defer="defer")
+        link(rel="stylesheet" type="text/css" class="ui" href="/semantic/css/semantic.min.css")
+        link(rel='stylesheet', href='/stylesheets/style.css')
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
         script(src="/socket.io/socket.io.js")
-        script(src="/javascripts/script.js")
+        script(src="/javascripts/script.js" defer="defer")
         script(src="https://maps.googleapis.com/maps/api/js?v=3.exp")
-        script(src="semantic.min.js")
+        script(src="/semantic/javascript/semantic.min.js")
     body
         .container
             .header
                 h1 Tweets Map
-                small
-                    | This map shows where people tweet about
-                    span  "#{data.key}"
-                small
-                    i
-                        | Last updated:
-                        span(id="last-update") Never
+            div(class="ui tabular menu")
+                a(class="active item") Home
+                a(class="item") Custom
+
+            div(class="left form")
+                div(class="ui form segment")
+                    div(class="field")
+                        label Map Type
+                        div(class="ui selection dropdown")
+                            input(type="hidden" name="maptype")
+                            div(class="default text") Scatter Plot
+                            i(class="dropdown icon")
+                            div(class="menu")
+                                div(class="item" data-value="1") Heat Map
+                                div(class="item" data-value="0") Scatter Plot
+
+                    div(class="field")
+                        label Keyword
+                        div(class="ui selection dropdown")
+                            input(type="hidden" name="keyword")
+                            div(class="default text") halloween
+                            i(class="dropdown icon")
+                            div(class="menu")
+                                div(class="item" data-value="0") amazon
+                                div(class="item" data-value="1") cloud
+                                div(class="item" data-value="2") columbia
+                                div(class="item" data-value="3") ebola
+                                div(class="item" data-value="4") halloween
+                                div(class="item" data-value="5") inbox
+                    div(class="field")
+                        label Last updated:
+                        label(id="last-update") Never
             div(id="map-canvas")
-            div(class="ui selection dropdown")
-                input(type="hidden" name="gender")
-                div(class="default text") Gender
-                i(class="dropdown icon")
-                div(class="menu")
-                    div(class="item" data-value="1") Male
-                    div(class="item" data-value="0") Female

@@ -19,10 +19,10 @@ var access_token = '';
 var access_token_secret = '';
 
 // Twitter symbols array.
-var watchSymbols = ['cloud','columbia','amazon','halloween','inbox'];//,'google','apple','twitter','facebook','microsoft',];
+var watchSymbols = ['cloud','columbia','amazon','halloween','inbox','ebola'];//,'google','apple','twitter','facebook','microsoft',];
 var current_key = watchSymbols[3];
 
-//db.createDB(watchSymbols);
+db.createDB(watchSymbols);
 
 //Generic Express setup
 app.set('port', process.env.PORT || 3000);
@@ -43,8 +43,8 @@ if ('development' == app.get('env')) {
 app.get('/', function(req, res) {
     var locations = db.fetch(current_key);
     var datapoints = {key: current_key, location: locations};
-    //res.render('index', {'data': datapoints});
-    res.sendfile("./index.html");
+    res.render('index', {'data': datapoints});
+    //res.sendfile("./index.html");
 });
 
 // Instantiate the twitter connection

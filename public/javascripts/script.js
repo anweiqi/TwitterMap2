@@ -18,10 +18,13 @@ function update(data){
 }
 
 function initialize() {
-    var myLatlng = new google.maps.LatLng(0,0);
+    var myLatlng = new google.maps.LatLng(10,20);
     var mapOptions = {
         zoom: 1,
         center: myLatlng
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 }
+
+$('.ui.dropdown')
+    .dropdown();

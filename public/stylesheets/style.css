@@ -1,5 +1,6 @@
 body {
   color: #333;
+  margin: 0px;
 }
 .header h1 {
   text-align: center;
@@ -11,11 +12,18 @@ body {
   margin-top: 10px;
 }
 .container {
-  width: 800px;
+  width: 1000px;
   margin-left: auto;
   margin-right: auto;
 }
 #map-canvas {
-  width: 800px;
-  height: 500px;
+  width: 650px;
+  height: 450px;
+  margin-left: auto;
+  margin-right: 0;
+}
+.left.form {
+  float: left;
+  width: 250px;
+  height: 450px;
 }
