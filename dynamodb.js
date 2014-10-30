@@ -1,6 +1,6 @@
 var exports = module.exports = {};
-var ddb = require('dynamodb').ddb({ accessKeyId: '',
-secretAccessKey: '' });
+var async = require('async');
+var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAJJ3WODX2NBYVCBSQ', secretAccessKey: '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' });
 
 exports.createDB = function(keylist) {
     var key;
@@ -23,13 +23,13 @@ exports.storeTweet = function(key, item) {
     });
 };
 
-exports.fetch = function(key){
-    ddb.scan(key, {}, function(err, res) {
-    if(err) {
-      console.log(err);
-    } else {
-      console.log(res);
-      return res;
-    }
- });
+exports.fetch = function(key, res){
+    ddb.scan(key, {}, function(err, db_res) {
+        if(err) {
+            console.log(err);
+        } else {
+            //console.log(db_res.items);
+            res.render('index', {'data': db_res.items});
+        }
+    });
 };
