@@ -33,7 +33,7 @@ function initialize() {
         center: myLatlng
     };
     map = new google.maps.Map(document.getElementById('map-canvas-home'), mapOptions);
-    custom_map = new google.maps.Map(document.getElementById('map-canvas-custom'), mapOptions);
+    //custom_map = new google.maps.Map(document.getElementById('map-canvas-custom'), mapOptions);
     var i;
     for(i=0; i<local_data.length; i++){
         update(local_data[i], null);
@@ -89,14 +89,16 @@ function clearData(){
 
 $('.maptype').dropdown({
     onChange: function(val){
-        if(val == 1) {
-            heatmap = new google.maps.visualization.HeatmapLayer({
-                data: pointArray
-            });
+        if(val == 1 && maptype == 0) {
+            if(heatmap == null) {
+                heatmap = new google.maps.visualization.HeatmapLayer({
+                    data: pointArray
+                });
+            }
             heatmap.setMap(map);
             clearMarkers();
             maptype = 1;
-        } else {
+        } else if(val == 0 && maptype == 1){
             heatmap.setMap(null);
             showMarkers();
             maptype = 0;
@@ -113,7 +115,6 @@ $('.keyword').dropdown({
 
 $('.tabular.menu .item').tab({history:false});
 
-/*$('.ui.top.attached.tabular.menu').click('tabsselect', function (event, ui) {
+$('.ui.top.attached.tabular.menu').click('tabsselect', function (event, ui) {
 
-     console.log(event);
-});*/
+});
