@@ -1,4 +1,4 @@
-var map, heatmap, maptype = 0;
+var map, heatmap = null, maptype = 0;
 var pointArray = new google.maps.MVCArray();
 var markers = []
 
@@ -58,13 +58,15 @@ function showMarkers() {
 $('.maptype').dropdown({
     onChange: function(val){
         if(val == 1 && maptype == 0) {
-            heatmap = new google.maps.visualization.HeatmapLayer({
-                data: pointArray
-            });
+            if(heatmap == null) {
+                heatmap = new google.maps.visualization.HeatmapLayer({
+                    data: pointArray
+                });
+            }
             heatmap.setMap(map);
             clearMarkers();
             maptype = 1;
-        } else if(val == 0 && maptype == 1){
+        } else if(val == 0 && mapType == 1){
             heatmap.setMap(null);
             showMarkers();    
             maptype = 0;

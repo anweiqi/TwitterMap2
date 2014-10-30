@@ -1,6 +1,7 @@
 var exports = module.exports = {};
 var async = require('async');
-var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAJJ3WODX2NBYVCBSQ', secretAccessKey: '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' });
+var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAINPO3IWELKFQ242A',
+secretAccessKey: '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' });
 
 exports.createDB = function(keylist) {
     var key;

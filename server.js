@@ -15,18 +15,19 @@ var io = require('socket.io')(http);
 
 var exports = module.exports = {};
 var async = require('async');
-var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAJJ3WODX2NBYVCBSQ', secretAccessKey: '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' });
+var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAINPO3IWELKFQ242A',
+secretAccessKey: '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' });
 
-var api_key = 'UPI9M7B0qXIjWacVPxBDrtSeI';
-var api_secret = 'TMfdpPxl6itogqWWQi4ku3DzkqvJoZErTqCt7hLXvpI6UrRDyY';
-var access_token = '1696515506-NIpLEZMxBYtX2gclE4ZMgt7UknmKuv38RKLCL0P';
-var access_token_secret = 'a3k2RjvfLuyKclkt0J8wHIMlMB9iNGevs23EBJpdVYR3U';
+var api_key = 'xmYfpilZ2NXRUEtTNmmQq9f1A';
+var api_secret = 'HT3p1D0XQ7K4EASUrKav35ESOlFEIJdQi5mHa1etkmg4bsCtme';
+var access_token = '2606431158-8W1YKkcrznmpPJnA4N3FtrOfnnLvcduB8dvNuCg';
+var access_token_secret = 'gRexrVpoiDAxat22huyw2FRhwFqZFAvFOa7iOoI6xFfNw';
 
 // Twitter symbols array.
 var watchSymbols = ['cloud','columbia','amazon','halloween','inbox','ebola'];//,'google','apple','twitter','facebook','microsoft',];
 var current_key = watchSymbols[1];
 
-//createDB(watchSymbols);
+createDB(watchSymbols);
 
 //Generic Express setup
 app.set('port', process.env.PORT || 3000);
