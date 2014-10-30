@@ -6,6 +6,7 @@ var twitter = require('twitter');
 var cronJob = require('cron').CronJob;
 var _ = require('underscore');
 var path = require('path');
+var url = require("url");
 //var db = require("./dynamodb.js");
 
 var app = express();
@@ -15,18 +16,39 @@ var io = require('socket.io')(http);
 
 var exports = module.exports = {};
 var async = require('async');
-var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAJJ3WODX2NBYVCBSQ', secretAccessKey: '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' });
+var ddb = require('dynamodb').ddb({ accessKeyId: '', secretAccessKey: '' });
 
-var api_key = 'UPI9M7B0qXIjWacVPxBDrtSeI';
-var api_secret = 'TMfdpPxl6itogqWWQi4ku3DzkqvJoZErTqCt7hLXvpI6UrRDyY';
-var access_token = '1696515506-NIpLEZMxBYtX2gclE4ZMgt7UknmKuv38RKLCL0P';
-var access_token_secret = 'a3k2RjvfLuyKclkt0J8wHIMlMB9iNGevs23EBJpdVYR3U';
+var api_key = '';
+var api_secret = '';
+var access_token = '';
+var access_token_secret = '';
 
 // Twitter symbols array.
-var watchSymbols = ['cloud','columbia','amazon','halloween','inbox','ebola'];//,'google','apple','twitter','facebook','microsoft',];
-var current_key = watchSymbols[1];
+var watchSymbols = ['amazon','giants','ebola','halloween','cat','game'];//,'google','apple','twitter','facebook','microsoft',];
+var init_key = watchSymbols[0];
 
-//createDB(watchSymbols);
+createDB = function(keylist) {
+    var key;
+    keylist.forEach(function(key){
+        createTableForKey(key);
+    });
+};
+
+createTableForKey = function(key) {
+     ddb.createTable(key, { hash: ['text', ddb.schemaTypes().string],
+                                       range: ['time', ddb.schemaTypes().number] },
+                                     {read: 10, write: 10}, function(err, details) {});
+};
+
+storeTweet = function(key, item) {
+    ddb.putItem(key, item, {}, function(err, res, cap) {
+        if(err){
+            console.log(err);
+        }
+    });
+};
+
+createDB(watchSymbols);
 
 //Generic Express setup
 app.set('port', process.env.PORT || 3000);
@@ -45,8 +67,27 @@ if ('development' == app.get('env')) {
 
 //default to cloud
 app.get('/', function(req, res) {
-    fetch(current_key,res);
-    //res.sendfile("./index.html");
+     //res.render('index');
+     ddb.scan(init_key, {}, function(err, db_res) {
+        if(err) {
+            console.log(err);
+        } else {
+            //console.log(db_res.count);
+            res.render('index', {'data': db_res.items});
+        }
+    });
+});
+
+app.get('/changekeyword', function(req, res) {
+    var params = url.parse(req.url, true).query;
+    ddb.scan(params.keyword, {}, function(err, db_res) {
+        if(err) {
+            console.log(err);
+        } else {
+            //console.log(db_res.count);
+            res.send(db_res.items);
+        }
+    });
 });
 
 // Instantiate the twitter connection
@@ -71,14 +112,13 @@ t.stream('statuses/filter', { track: watchSymbols }, function(stream) {
               var item = {
                 text: tweet.text,
                 time: (new Date()).getTime(),
-                location: tweet.geo.coordinates,
+                latitude: tweet.coordinates.coordinates[1],
+                longitude: tweet.coordinates.coordinates[0],
                 username: tweet.user.name,
                 screenname: tweet.user.screen_name
               };
               storeTweet(v, item);
-              if(v == current_key){
-                io.emit('data', item);
-              }
+              io.emit('data', {key: v, payload: item});
           }
       });
     }
@@ -102,42 +142,3 @@ t.stream('statuses/filter', { track: watchSymbols }, function(stream) {
 http.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
-
-
-createDB = function(keylist) {
-    var key;
-    keylist.forEach(function(key){
-        createTableForKey(key);
-    });
-};
-
-createTableForKey = function(key) {
-     ddb.createTable(key, { hash: ['text', ddb.schemaTypes().string],
-                                       range: ['time', ddb.schemaTypes().number] },
-                                     {read: 10, write: 10}, function(err, details) {});
-};
-
-storeTweet = function(key, item) {
-    ddb.putItem(key, item, {}, function(err, res, cap) {
-        if(err){
-            console.log(err);
-        }
-    });
-};
-
-fetch = function(key, res){
-    ddb.scan(key, {}, function(err, db_res) {
-        if(err) {
-            console.log(err);
-        } else {
-            //console.log(db_res.items);
-            res.render('index', {'data': db_res.items});
-            /*console.log(db_res.items[0]);
-            var i;
-            for(i=0; i<db_res.items.length; i++){
-                //console.log(db_res.items[i]);
-                io.emit('data',db_res.items[i]);
-            }*/
-        }
-    });
-};

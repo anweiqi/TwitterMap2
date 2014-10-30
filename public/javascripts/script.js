@@ -1,21 +1,24 @@
 var map, heatmap, maptype = 0;
 var pointArray = new google.maps.MVCArray();
-var markers = []
+var markers = [];
+var current_key = "amazon";
 
 $(document).ready(function() {
     google.maps.event.addDomListener(window, 'load', initialize);
     socket = io();
     socket.on('data', function(data) {
-        update(data);
-        $('#last-update').text(new Date().toTimeString());
+        if(data.key === current_key){
+            update(data.payload);
+            $('#last-update').text(new Date().toTimeString());
+        }
     });
 });
 
 function update(data){
-    var newTweet = new google.maps.LatLng(data.location[0],data.location[1]);
+    var newTweet = new google.maps.LatLng(data.latitude,data.longitude);
     var marker = new google.maps.Marker({
         position: newTweet,
-        map: maptype == 0?map:null,
+        map: maptype === 0?map:null,
         title: data.text
     });
     markers.push(marker);
@@ -29,12 +32,26 @@ function initialize() {
         center: myLatlng
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    //var history_points = $("#data").val();
-    //console.log(history_points);
     var i;
     for(i=0; i<local_data.length; i++){
         update(local_data[i]);
     }
+}
+
+function httpGet(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, true);
+    xmlHttp.onload = function (e) {
+  if (xmlHttp.readyState === 4) {
+    if (xmlHttp.status === 200) {
+      console.log(xmlHttp.responseText);
+    } else {
+      console.error(xmlHttp.statusText);
+    }
+  }
+};
+    xmlHttp.send( null );
 }
 
 // Sets the map on all markers in the array.
@@ -54,6 +71,16 @@ function showMarkers() {
     setAllMap(map);
 }
 
+function clearData(){
+    heatmap.setMap(null);
+    clearMarkers();
+    while(pointArray.length > 0) {
+        pointArray.pop();
+    }
+    while(markers.length > 0) {
+        markers.pop();
+    }
+}
 
 $('.maptype').dropdown({
     onChange: function(val){
@@ -66,10 +93,20 @@ $('.maptype').dropdown({
             maptype = 1;
         } else {
             heatmap.setMap(null);
-            showMarkers();    
+            showMarkers();
             maptype = 0;
         }
-    }    
+    }
 });
 
-$('.keyword').dropdown();
+$('.keyword').dropdown({
+    onChange: function(val){
+        clearData();
+        httpGet("/changekeyword?keyword="+val);
+        /*current_key = val;
+        for(i=0; i<res.length; i++){
+            update(res[i]);
+        }
+        console.log(res);*/
+    }
+});
