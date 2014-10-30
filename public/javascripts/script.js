@@ -51,14 +51,14 @@ function showMarkers() {
 
 $('.maptype').dropdown({
     onChange: function(val){
-        if(val == 1) {
+        if(val == 1 && maptype == 0) {
             heatmap = new google.maps.visualization.HeatmapLayer({
                 data: pointArray
             });
             heatmap.setMap(map);
             clearMarkers();
             maptype = 1;
-        } else {
+        } else if(val == 0 && maptype == 1){
             heatmap.setMap(null);
             showMarkers();    
             maptype = 0;
