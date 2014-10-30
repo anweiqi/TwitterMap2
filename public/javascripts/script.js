@@ -1,4 +1,4 @@
-var map, heatmap, maptype = 0;
+var map, custom_map, heatmap, maptype = 0;
 var pointArray = new google.maps.MVCArray();
 var markers = [];
 var current_key = "amazon";
@@ -8,17 +8,18 @@ $(document).ready(function() {
     socket = io();
     socket.on('data', function(data) {
         if(data.key === current_key){
-            update(data.payload);
+            update(data.payload, google.maps.Animation.DROP);
             $('#last-update').text(new Date().toTimeString());
         }
     });
 });
 
-function update(data){
+function update(data, animation){
     var newTweet = new google.maps.LatLng(data.latitude,data.longitude);
     var marker = new google.maps.Marker({
         position: newTweet,
         map: maptype === 0?map:null,
+        animation: animation,
         title: data.text
     });
     markers.push(marker);
@@ -31,10 +32,11 @@ function initialize() {
         zoom: 1,
         center: myLatlng
     };
-    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    map = new google.maps.Map(document.getElementById('map-canvas-home'), mapOptions);
+    custom_map = new google.maps.Map(document.getElementById('map-canvas-custom'), mapOptions);
     var i;
     for(i=0; i<local_data.length; i++){
-        update(local_data[i]);
+        update(local_data[i], null);
     }
 }
 
@@ -45,7 +47,11 @@ function httpGet(theUrl)
     xmlHttp.onload = function (e) {
   if (xmlHttp.readyState === 4) {
     if (xmlHttp.status === 200) {
-      console.log(xmlHttp.responseText);
+        var res = JSON.parse(xmlHttp.responseText);
+        for(i=0; i<res.length; i++){
+            update(res[i], null);
+        }
+        current_key = val;
     } else {
       console.error(xmlHttp.statusText);
     }
@@ -72,7 +78,6 @@ function showMarkers() {
 }
 
 function clearData(){
-    heatmap.setMap(null);
     clearMarkers();
     while(pointArray.length > 0) {
         pointArray.pop();
@@ -103,10 +108,12 @@ $('.keyword').dropdown({
     onChange: function(val){
         clearData();
         httpGet("/changekeyword?keyword="+val);
-        /*current_key = val;
-        for(i=0; i<res.length; i++){
-            update(res[i]);
-        }
-        console.log(res);*/
     }
 });
+
+$('.tabular.menu .item').tab({history:false});
+
+/*$('.ui.top.attached.tabular.menu').click('tabsselect', function (event, ui) {
+
+     console.log(event);
+});*/

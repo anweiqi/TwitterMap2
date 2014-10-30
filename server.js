@@ -16,12 +16,12 @@ var io = require('socket.io')(http);
 
 var exports = module.exports = {};
 var async = require('async');
-var ddb = require('dynamodb').ddb({ accessKeyId: '', secretAccessKey: '' });
+var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAJJ3WODX2NBYVCBSQ', secretAccessKey: '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' });
 
-var api_key = '';
-var api_secret = '';
-var access_token = '';
-var access_token_secret = '';
+var api_key = 'UPI9M7B0qXIjWacVPxBDrtSeI';
+var api_secret = 'TMfdpPxl6itogqWWQi4ku3DzkqvJoZErTqCt7hLXvpI6UrRDyY';
+var access_token = '1696515506-NIpLEZMxBYtX2gclE4ZMgt7UknmKuv38RKLCL0P';
+var access_token_secret = 'a3k2RjvfLuyKclkt0J8wHIMlMB9iNGevs23EBJpdVYR3U';
 
 // Twitter symbols array.
 var watchSymbols = ['amazon','giants','ebola','halloween','cat','game'];//,'google','apple','twitter','facebook','microsoft',];
@@ -84,7 +84,7 @@ app.get('/changekeyword', function(req, res) {
         if(err) {
             console.log(err);
         } else {
-            //console.log(db_res.count);
+            console.log(db_res.count);
             res.send(db_res.items);
         }
     });
