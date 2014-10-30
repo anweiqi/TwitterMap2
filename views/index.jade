@@ -6,9 +6,6 @@ html
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
         script(src="/socket.io/socket.io.js")
-        //script(src="https://maps.googleapis.com/maps/api/js?v=3.exp")
-        script(src="/javascripts/script.js" defer="defer")
-        //script(src="https://maps.googleapis.com/maps/api/js?v=3.exp")
         script(src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false")
         script(src="/semantic/javascript/semantic.min.js")
         script(type='text/javascript').
@@ -30,7 +27,7 @@ html
                             input(type="hidden" name="maptype")
                             div(class="default text") Scatter Plot
                             i(class="dropdown icon")
-                            div(class="menu") 
+                            div(class="menu")
                                 div(class="item" data-value="1") Heat Map
                                 div(class="item" data-value="0") Scatter Plot
 
@@ -38,15 +35,15 @@ html
                         label Keyword
                         div(class="ui selection dropdown keyword")
                             input(type="hidden" name="keyword")
-                            div(class="default text") halloween
+                            div(class="default text") amazon
                             i(class="dropdown icon")
                             div(class="menu")
-                                div(class="item" data-value="0") amazon
-                                div(class="item" data-value="1") cloud
-                                div(class="item" data-value="2") columbia
-                                div(class="item" data-value="3") ebola
-                                div(class="item" data-value="4") halloween
-                                div(class="item" data-value="5") inbox
+                                div(class="item" data-value="amazon") amazon
+                                div(class="item" data-value="giants") giants
+                                div(class="item" data-value="game") game
+                                div(class="item" data-value="ebola") ebola
+                                div(class="item" data-value="halloween") halloween
+                                div(class="item" data-value="cat") cat
                     div(class="field")
                         label Last updated:
                         label(id="last-update") Never

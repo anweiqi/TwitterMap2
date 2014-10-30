@@ -6,6 +6,7 @@ var twitter = require('twitter');
 var cronJob = require('cron').CronJob;
 var _ = require('underscore');
 var path = require('path');
+var url = require("url");
 //var db = require("./dynamodb.js");
 
 var app = express();
@@ -15,19 +16,34 @@ var io = require('socket.io')(http);
 
 var exports = module.exports = {};
 var async = require('async');
-var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAINPO3IWELKFQ242A',
-secretAccessKey: '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' });
+var ddb = require('dynamodb').ddb({ accessKeyId: '',
+secretAccessKey: '' });
 
-var api_key = 'xmYfpilZ2NXRUEtTNmmQq9f1A';
-var api_secret = 'HT3p1D0XQ7K4EASUrKav35ESOlFEIJdQi5mHa1etkmg4bsCtme';
-var access_token = '2606431158-8W1YKkcrznmpPJnA4N3FtrOfnnLvcduB8dvNuCg';
-var access_token_secret = 'gRexrVpoiDAxat22huyw2FRhwFqZFAvFOa7iOoI6xFfNw';
+var api_key = '';
+var api_secret = '';
+var access_token = '';
+var access_token_secret = '';
 
 // Twitter symbols array.
-var watchSymbols = ['cloud','columbia','amazon','halloween','inbox','ebola'];//,'google','apple','twitter','facebook','microsoft',];
-var current_key = watchSymbols[1];
+var watchSymbols = ['amazon','giants','ebola','halloween','cat','game'];//,'google','apple','twitter','facebook','microsoft',];
+var tableName = 'tweets';
+var init_key = watchSymbols[3];
 
-createDB(watchSymbols);
+createDB = function(key) {
+     ddb.createTable(key, { hash: ['keyword', ddb.schemaTypes().string],
+                                       range: ['time', ddb.schemaTypes().number] },
+                                     {read: 10, write: 10}, function(err, details) {});
+};
+
+storeTweet = function(key, item) {
+    ddb.putItem(key, item, {}, function(err, res, cap) {
+        if(err){
+            console.log(err);
+        }
+    });
+};
+
+createDB(tableName);
 
 //Generic Express setup
 app.set('port', process.env.PORT || 3000);
@@ -46,8 +62,27 @@ if ('development' == app.get('env')) {
 
 //default to cloud
 app.get('/', function(req, res) {
-    fetch(current_key,res);
-    //res.sendfile("./index.html");
+     //res.render('index');
+     ddb.scan(init_key, {}, function(err, db_res) {
+        if(err) {
+            console.log(err);
+        } else {
+            //console.log(db_res.count);
+            res.render('index', {'data': db_res.items});
+        }
+    });
+});
+
+app.get('/changekeyword', function(req, res) {
+    var params = url.parse(req.url, true).query;
+    ddb.scan(params.keyword, {}, function(err, db_res) {
+        if(err) {
+            console.log(err);
+        } else {
+            //console.log(db_res.count);
+            res.send(db_res.items);
+        }
+    });
 });
 
 // Instantiate the twitter connection
@@ -70,16 +105,16 @@ t.stream('statuses/filter', { track: watchSymbols }, function(stream) {
       _.each(watchSymbols, function(v) {
           if (text.indexOf(v.toLowerCase()) !== -1) {
               var item = {
+                keyword: v,
                 text: tweet.text,
                 time: (new Date()).getTime(),
-                location: tweet.geo.coordinates,
+                latitude: tweet.coordinates.coordinates[1],
+                longitude: tweet.coordinates.coordinates[0],
                 username: tweet.user.name,
                 screenname: tweet.user.screen_name
               };
-              storeTweet(v, item);
-              if(v == current_key){
-                io.emit('data', item);
-              }
+              storeTweet(tableName, item);
+              io.emit('data', {key: v, payload: item});
           }
       });
     }
@@ -105,40 +140,41 @@ http.listen(app.get('port'), function(){
 });
 
 
-createDB = function(keylist) {
-    var key;
-    keylist.forEach(function(key){
-        createTableForKey(key);
-    });
-};
+var option = {limit: 5, consistentRead: true, rangeKeyCondition: {"between": [1414687170000,1414687180000]}, scanIndexForward: true}
 
-createTableForKey = function(key) {
-     ddb.createTable(key, { hash: ['text', ddb.schemaTypes().string],
-                                       range: ['time', ddb.schemaTypes().number] },
-                                     {read: 10, write: 10}, function(err, details) {});
-};
+ddb.query('tweets', 'halloween', option, qresult);
 
-storeTweet = function(key, item) {
-    ddb.putItem(key, item, {}, function(err, res, cap) {
-        if(err){
-            console.log(err);
+function qresult(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else {
+        console.log(data);           // successful response
+        if(!isEmpty(data.lastEvaluatedKey)){
+            option.exclusiveStartKey = data.lastEvaluatedKey;
+            ddb.query(tableName, 'halloween', option, qresult);
         }
-    });
-};
 
-fetch = function(key, res){
-    ddb.scan(key, {}, function(err, db_res) {
-        if(err) {
-            console.log(err);
-        } else {
-            //console.log(db_res.items);
-            res.render('index', {'data': db_res.items});
-            /*console.log(db_res.items[0]);
-            var i;
-            for(i=0; i<db_res.items.length; i++){
-                //console.log(db_res.items[i]);
-                io.emit('data',db_res.items[i]);
-            }*/
-        }
-    });
-};
+    }
+}
+
+// Speed up calls to hasOwnProperty
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function isEmpty(obj) {
+
+    // null and undefined are "empty"
+    if (obj == null) return true;
+
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length > 0)    return false;
+    if (obj.length === 0)  return true;
+
+    // Otherwise, does it have any properties of its own?
+    // Note that this doesn't handle
+    // toString and valueOf enumeration bugs in IE < 9
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+
+    return true;
+}
