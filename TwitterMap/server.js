@@ -7,6 +7,7 @@ var cronJob = require('cron').CronJob;
 var _ = require('underscore');
 var path = require('path');
 var url = require("url");
+var async = require("async");
 //var db = require("./dynamodb.js");
 
 var app = express();
@@ -16,12 +17,13 @@ var io = require('socket.io')(http);
 
 var exports = module.exports = {};
 var async = require('async');
-var ddb = require('dynamodb').ddb({ accessKeyId: '', secretAccessKey: '' });
+var ddb = require('dynamodb').ddb({ accessKeyId: '',
+secretAccessKey: '' });
 
-var api_key = 'UPI9M7B0qXIjWacVPxBDrtSeI';
-var api_secret = 'TMfdpPxl6itogqWWQi4ku3DzkqvJoZErTqCt7hLXvpI6UrRDyY';
-var access_token = '1696515506-NIpLEZMxBYtX2gclE4ZMgt7UknmKuv38RKLCL0P';
-var access_token_secret = 'a3k2RjvfLuyKclkt0J8wHIMlMB9iNGevs23EBJpdVYR3U';
+var api_key = '';
+var api_secret = '';
+var access_token = '';
+var access_token_secret = '';
 
 // Twitter symbols array.
 var watchSymbols = ['amazon','giants','ebola','halloween','cat','game'];//,'google','apple','twitter','facebook','microsoft',];
@@ -139,21 +141,25 @@ http.listen(app.get('port'), function(){
 });
 
 
+/*example for async query*/
 var option = {limit: 5, consistentRead: true, rangeKeyCondition: {"between": [1414687170000,1414687180000]}, scanIndexForward: true};
+var keyName = 'halloween';
+var d;
 
-ddb.query('tweets', 'halloween', option, qresult);
-
-function qresult(err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else {
-        console.log(data);           // successful response
-        if(!isEmpty(data.lastEvaluatedKey)){
+async.doUntil(function(callback){
+    ddb.query('tweets', 'halloween', option, function(err,data){
+        if(err) {
+            callback(err);
+        } else {
+            console.log(data);
             option.exclusiveStartKey = data.lastEvaluatedKey;
-            ddb.query(tableName, 'halloween', option, qresult);
+            d = data.lastEvaluatedKey;
         }
-
-    }
-}
+        callback(false);
+    });
+}, function() {
+        return isEmpty(d);
+    }, function(err) { if(err) console.log(err)});
 
 // Speed up calls to hasOwnProperty
 var hasOwnProperty = Object.prototype.hasOwnProperty;
