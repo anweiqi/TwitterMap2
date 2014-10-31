@@ -59,26 +59,6 @@ function httpGet(theUrl, val)
     xmlHttp.send( null );
 }
 
-function httpAddKey(theUrl, val)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", theUrl, true);
-    xmlHttp.onload = function (e) {
-  if (xmlHttp.readyState == 4) {
-    if (xmlHttp.status == 200) {
-        if(xmlHttp.responseText == "ok"){
-            current_key = val;
-        } else {
-            prompt("Keyword already in the pre-defined list!");
-        }
-    } else {
-      console.error(xmlHttp.statusText);
-    }
-  }
-};
-    xmlHttp.send( null );
-}
-
 // Sets the map on all markers in the array.
 function setAllMap(map) {
     for (var i = 0; i < markers.length; i++) {

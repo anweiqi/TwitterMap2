@@ -13,7 +13,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var exports = module.exports = {};
-var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAIJUWSX32X2AGYI5A', secretAccessKey: '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' });
+var ddb = require('dynamodb').ddb({ accessKeyId: '', secretAccessKey: '' });
 
 var api_key = 'UPI9M7B0qXIjWacVPxBDrtSeI';
 var api_secret = 'TMfdpPxl6itogqWWQi4ku3DzkqvJoZErTqCt7hLXvpI6UrRDyY';
@@ -21,7 +21,7 @@ var access_token = '1696515506-NIpLEZMxBYtX2gclE4ZMgt7UknmKuv38RKLCL0P';
 var access_token_secret = 'a3k2RjvfLuyKclkt0J8wHIMlMB9iNGevs23EBJpdVYR3U';
 
 // Twitter symbols array.
-var watchSymbols = ['apple','giants','ebola','halloween','cat','game'];//,'google','apple','twitter','facebook','microsoft',];
+var watchSymbols = ['apple','giants','google','cook','cat','game'];//,'google','apple','twitter','facebook','microsoft',];
 var init_key = watchSymbols[0];
 
 createDB = function(keylist) {
