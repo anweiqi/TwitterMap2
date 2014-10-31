@@ -12,7 +12,6 @@
     "socket.io": "*",
     "stylus": "*",
     "twitter": "*",
-    "underscore": "*",
-    "async":"*"
+    "underscore": "*"
   }
 }

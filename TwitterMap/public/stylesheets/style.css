@@ -22,12 +22,6 @@ body {
   margin-left: auto;
   margin-right: 0;
 }
-#map-canvas-custom {
-  width: 650px;
-  height: 450px;
-  margin-left: auto;
-  margin-right: 0;
-}
 .left.form {
   float: left;
   width: 250px;

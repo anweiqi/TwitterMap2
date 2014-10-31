@@ -5,7 +5,6 @@ html
         link(rel="stylesheet" type="text/css" class="ui" href="/semantic/css/semantic.min.css")
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
-        script(src="/crm/js/jquery.address.js")
         script(src="/socket.io/socket.io.js")
         script(src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false")
         script(src="/semantic/javascript/semantic.min.js")
@@ -19,7 +18,6 @@ html
 
             div(class="ui top attached tabular menu")
                 a(class="active item" data-tab="home") Home
-                a(class="item" data-tab="custom") Custom
 
             div(class="active ui bottom attached tab segment" data-tab="home")
                 div(class="left form")
@@ -38,10 +36,10 @@ html
                             label Keyword
                             div(class="ui selection dropdown keyword")
                                 input(type="hidden" name="keyword")
-                                div(class="default text") amazon
+                                div(class="default text") apple
                                 i(class="dropdown icon")
                                 div(class="menu")
-                                    div(class="item" data-value="amazon") amazon
+                                    div(class="item" data-value="apple") apple
                                     div(class="item" data-value="giants") giants
                                     div(class="item" data-value="game") game
                                     div(class="item" data-value="ebola") ebola
@@ -51,17 +49,5 @@ html
                             label Last updated:
                             label(id="last-update") Never
                 div(id="map-canvas-home")
-
-            div(class="ui bottom attached tab segment" data-tab="custom")
-                div(class="left form")
-                    div(class="ui form segment")
-                        div(class="field")
-                            label Track your own word
-                            div(class="ui action input")
-                                input(type="text" placeholder="Search...")
-                                div(class="ui icon button")
-                                    i(class="search icon")
-
-                div(id="map-canvas-custom")
 
 

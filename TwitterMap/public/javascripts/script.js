@@ -1,13 +1,13 @@
-var map, custom_map, heatmap, maptype = 0;
+var map, heatmap, maptype = 0;
 var pointArray = new google.maps.MVCArray();
 var markers = [];
-var current_key = "amazon";
+var current_key = "apple";
 
 $(document).ready(function() {
     google.maps.event.addDomListener(window, 'load', initialize);
     socket = io();
     socket.on('data', function(data) {
-        if(data.key === current_key){
+        if(data.key == current_key){
             update(data.payload, google.maps.Animation.DROP);
             $('#last-update').text(new Date().toTimeString());
         }
@@ -33,25 +33,44 @@ function initialize() {
         center: myLatlng
     };
     map = new google.maps.Map(document.getElementById('map-canvas-home'), mapOptions);
-    //custom_map = new google.maps.Map(document.getElementById('map-canvas-custom'), mapOptions);
     var i;
     for(i=0; i<local_data.length; i++){
         update(local_data[i], null);
     }
 }
 
-function httpGet(theUrl)
+function httpGet(theUrl, val)
 {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", theUrl, true);
     xmlHttp.onload = function (e) {
-  if (xmlHttp.readyState === 4) {
-    if (xmlHttp.status === 200) {
+  if (xmlHttp.readyState == 4) {
+    if (xmlHttp.status == 200) {
         var res = JSON.parse(xmlHttp.responseText);
         for(i=0; i<res.length; i++){
             update(res[i], null);
         }
         current_key = val;
+    } else {
+      console.error(xmlHttp.statusText);
+    }
+  }
+};
+    xmlHttp.send( null );
+}
+
+function httpAddKey(theUrl, val)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, true);
+    xmlHttp.onload = function (e) {
+  if (xmlHttp.readyState == 4) {
+    if (xmlHttp.status == 200) {
+        if(xmlHttp.responseText == "ok"){
+            current_key = val;
+        } else {
+            prompt("Keyword already in the pre-defined list!");
+        }
     } else {
       console.error(xmlHttp.statusText);
     }
@@ -108,13 +127,11 @@ $('.maptype').dropdown({
 
 $('.keyword').dropdown({
     onChange: function(val){
-        clearData();
-        httpGet("/changekeyword?keyword="+val);
+        if(val != current_key){
+            current_key = "";
+            clearData();
+            httpGet("/changekeyword?keyword="+val, val);
+        }
     }
 });
 
-$('.tabular.menu .item').tab({history:false});
-
-$('.ui.top.attached.tabular.menu').click('tabsselect', function (event, ui) {
-
-});
