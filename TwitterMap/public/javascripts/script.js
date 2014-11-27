@@ -8,6 +8,17 @@ $(document).ready(function() {
     socket = io();
     socket.on('data', function(data) {
         if(data.key == current_key){
+            console.log(data.payload.sentiment);
+            if(data.payload.sentiment == 'positive'){
+                var positive = Number(document.getElementById("positive").innerHTML) + 1;
+                document.getElementById("positive").innerHTML = positive;
+            }else if(data.payload.sentiment == 'negative'){
+                var negative = Number(document.getElementById("negative").innerHTML) + 1;
+                document.getElementById("negative").innerHTML = negative;
+            }else if(data.payload.sentiment == 'neutral'){
+                var neutral = Number(document.getElementById("neutral").innerHTML) + 1;
+                document.getElementById("neutral").innerHTML = neutral;
+            }
             update(data.payload, google.maps.Animation.DROP);
             $('#last-update').text(new Date().toTimeString());
         }
@@ -15,12 +26,21 @@ $(document).ready(function() {
 });
 
 function update(data, animation){
+    var image;
+    if(data.sentiment == 'positive'){
+        image = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+    }else if(data.sentiment == 'negative'){
+        image = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+    }else if(data.sentiment == 'neutral'){
+        image = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+    }
     var newTweet = new google.maps.LatLng(data.latitude,data.longitude);
     var marker = new google.maps.Marker({
         position: newTweet,
         map: maptype === 0?map:null,
         animation: animation,
-        title: data.text
+        title: data.text,
+        icon: image
     });
     markers.push(marker);
     pointArray.push(newTweet);

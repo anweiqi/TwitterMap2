@@ -6,8 +6,14 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "aws-sdk": "*",
+    "aws-snsclient": "^0.2.0",
+    "aws-sqs": "*",
+    "cluster": "^0.7.7",
+    "cluster-master": "*",
     "dynamodb": "^0.3.6",
     "express": "3.1.2",
+    "graceful-fs": "^3.0.4",
     "jade": "*",
     "socket.io": "*",
     "stylus": "*",

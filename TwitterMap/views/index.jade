@@ -3,6 +3,8 @@ html
     head
         title Node.js, Twitter Stream, Socket.io
         link(rel="stylesheet" type="text/css" class="ui" href="/semantic/css/semantic.min.css")
+        link(rel="stylesheet" type="text/css" class="ui" href="/semantic/css/statistic.min.css")
+        link(rel="stylesheet" type="text/css" class="ui" href="/semantic/css/statistic.css")
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
         script(src="/socket.io/socket.io.js")
@@ -29,8 +31,9 @@ html
                                 div(class="default text") Scatter Plot
                                 i(class="dropdown icon")
                                 div(class="menu")
-                                    div(class="item" data-value="1") Heat Map
                                     div(class="item" data-value="0") Scatter Plot
+                                    div(class="item" data-value="1") Heat Map
+                                    div(class="item" data-value="2") Sentiment Map
 
                         div(class="field")
                             label Keyword
@@ -48,6 +51,28 @@ html
                         div(class="field")
                             label Last updated:
                             label(id="last-update") Never
+
+                    div(class="ui segment")
+                        div
+                            label Sentiment
+                        div(class="ui statistics")
+                            div(class="green statistic")
+                                div(class="value")
+                                    p(id="positive") 0
+                                div(class="label")
+                                    p Positive
+                        div(class="ui statistics")
+                            div(class="orange statistic")
+                                div(class="value")
+                                    p(id="neutral") 0
+                                div(class="label")
+                                    p Neutral
+                        div(class="ui statistics")
+                            div(class="red statistic")
+                                div(class="value")
+                                    p(id="negative") 0
+                                div(class="label")
+                                    p Negative
                 div(id="map-canvas-home")
 
 
