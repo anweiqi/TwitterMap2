@@ -265,7 +265,7 @@ var operate = function(){
                         }
                     });
             }else{
-                message.payload.sentiment = "neutral";
+                message.payload.sentiment = "positive";
 
                 sns.publish({
                     TargetArn:'arn:aws:sns:us-east-1:350182859835:TweetsSentiment',
