@@ -1,8 +1,8 @@
 Second Version
 ==========
-refer to the link http://twittermap2.elasticbeanstalk.com
+refer to the link http://twittermap-jiuyangz.elasticbeanstalk.com
 
-1. Display the count of 
+1. Select the sentiment map in the first dropdown and map and count updates (green for positive, yellow for neutral, red for negative)  
 
 TwitterMap
 ==========
