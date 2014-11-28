@@ -1,11 +1,11 @@
 var SQS = require("aws-sqs");
-var sqs = new SQS('', '');
+var sqs = new SQS('AKIAJ4QWZZUPPRTIZ7EQ', 'wQsuZl8ZtZc/2HiMW9i/JQvUGGY4uD+r8/2D+NRV');
 
 var AWS = require('aws-sdk');
 AWS.config.loadFromPath('./config.json');
 var sns = new AWS.SNS();
 
-var ddb = require('dynamodb').ddb({ accessKeyId: '', secretAccessKey: '' });
+var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAJ4QWZZUPPRTIZ7EQ', secretAccessKey: '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' });
 
 var queueName = '/350182859835/TweetsQueue';
 
@@ -67,7 +67,7 @@ var operate = function(){
                             console.log("Sent message: "+data.MessageId);
                         }
                     });
-                operate();
+                //operate();
             }
             //console.log(response);
         });
