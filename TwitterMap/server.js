@@ -11,7 +11,7 @@ var clusterMaster = require("cluster-master");
 var cluster = require('cluster');
 
 var SQS = require("aws-sqs");
-var sqs = new SQS('', '');
+var sqs = new SQS('AKIAJ4QWZZUPPRTIZ7EQ', 'wQsuZl8ZtZc/2HiMW9i/JQvUGGY4uD+r8/2D+NRV');
 
 SNSClient = require('aws-snsclient');
 var auth = {
@@ -27,7 +27,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var exports = module.exports = {};
-var ddb = require('dynamodb').ddb({ accessKeyId: '', secretAccessKey: '' });
+var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAJ4QWZZUPPRTIZ7EQ', secretAccessKey: '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' });
 
 var api_key = 'UPI9M7B0qXIjWacVPxBDrtSeI';
 var api_secret = 'TMfdpPxl6itogqWWQi4ku3DzkqvJoZErTqCt7hLXvpI6UrRDyY';
@@ -79,7 +79,7 @@ storeTweet = function(key, item) {
     });
 };
 
-createSDB(watchSymbols);
+//createSDB(watchSymbols);
 
 //Generic Express setup
 app.set('port', process.env.PORT || 3000);
@@ -98,7 +98,7 @@ if ('development' == app.get('env')) {
 
 //default to init_key
 app.get('/', function(req, res) {
-     ddb.scan(init_key+"_s", {}, function(err, db_res) {
+     ddb.scan(init_key, {}, function(err, db_res) {
         if(err) {
             console.log(err);
         } else {
@@ -110,7 +110,7 @@ app.get('/', function(req, res) {
 
 app.get('/changekeyword', function(req, res) {
     var params = url.parse(req.url, true).query;
-    ddb.scan(params.keyword+"_s", {}, function(err, db_res) {
+    ddb.scan(params.keyword, {}, function(err, db_res) {
         if(err) {
             console.log("Scan Errior");
             console.log(err);
@@ -128,8 +128,8 @@ var client = SNSClient(auth, function(err, message) {
     }
     //console.log(message);
     var item = JSON.parse(message.Message);
-    var key = item.key + "_s";
-    storeTweet(key, item.payload);
+    //var key = item.key + "_s";
+    //storeTweet(key, item.payload);
     io.emit('data', item);
 });
 
@@ -191,7 +191,7 @@ t.stream('statuses/filter', { track: watchSymbols }, function(stream) {
                 }
                 //console.log(res);
               });
-              //storeTweet(v, item);
+              storeTweet(v, item);
               item.sentiment = "unevaluated";
               //io.emit('data', {key: v, payload: item});
               //console.log(item);
@@ -211,13 +211,13 @@ http.listen(app.get('port'), function(){
 
 } else {
     var SQS = require("aws-sqs");
-var sqs = new SQS('', '');
+var sqs = new SQS('AKIAJ4QWZZUPPRTIZ7EQ', 'wQsuZl8ZtZc/2HiMW9i/JQvUGGY4uD+r8/2D+NRV');
 
 var AWS = require('aws-sdk');
 AWS.config.loadFromPath('./config.json');
 var sns = new AWS.SNS();
 
-var ddb = require('dynamodb').ddb({ accessKeyId: '', secretAccessKey: '' });
+var ddb = require('dynamodb').ddb({ accessKeyId: 'AKIAJ4QWZZUPPRTIZ7EQ', secretAccessKey: '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' });
 
 var queueName = '/350182859835/TweetsQueue';
 
@@ -261,7 +261,7 @@ var operate = function(){
                             console.log("Error sending a message: "+err);
                         }else{
                             operate();
-                            //console.log("Sent message: "+data.MessageId);
+                            console.log("Sent message: "+data.MessageId);
                         }
                     });
             }else{
@@ -276,10 +276,10 @@ var operate = function(){
                             console.log("Error sending a message: "+err);
                         }else{
                             operate();
-                            console.log("Sent message: "+data.MessageId);
+                            //console.log("Sent message: "+data.MessageId);
                         }
                     });
-                operate();
+                //operate();
             }
             //console.log(response);
         });

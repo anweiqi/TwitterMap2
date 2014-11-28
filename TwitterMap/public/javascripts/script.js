@@ -8,7 +8,7 @@ $(document).ready(function() {
     socket = io();
     socket.on('data', function(data) {
         if(data.key == current_key){
-            console.log(data.payload.sentiment);
+            if(maptype == 2){
             if(data.payload.sentiment == 'positive'){
                 var positive = Number(document.getElementById("positive").innerHTML) + 1;
                 document.getElementById("positive").innerHTML = positive;
@@ -18,7 +18,7 @@ $(document).ready(function() {
             }else if(data.payload.sentiment == 'neutral'){
                 var neutral = Number(document.getElementById("neutral").innerHTML) + 1;
                 document.getElementById("neutral").innerHTML = neutral;
-            }
+            }}
             update(data.payload, google.maps.Animation.DROP);
             $('#last-update').text(new Date().toTimeString());
         }
@@ -27,7 +27,8 @@ $(document).ready(function() {
 
 function update(data, animation){
     var image;
-    if(data.sentiment == 'positive'){
+    if(data.hasOwnProperty('sentiment') && maptype == 2){
+        if(data.sentiment == 'positive'){
         image = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
     }else if(data.sentiment == 'negative'){
         image = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
@@ -37,13 +38,25 @@ function update(data, animation){
     var newTweet = new google.maps.LatLng(data.latitude,data.longitude);
     var marker = new google.maps.Marker({
         position: newTweet,
-        map: maptype === 0?map:null,
+        map: map,
         animation: animation,
         title: data.text,
         icon: image
     });
     markers.push(marker);
     pointArray.push(newTweet);
+    }else{
+        var newTweet = new google.maps.LatLng(data.latitude,data.longitude);
+    var marker = new google.maps.Marker({
+        position: newTweet,
+        map: maptype === 0?map:null,
+        animation: animation,
+        title: data.text
+    });
+    markers.push(marker);
+    pointArray.push(newTweet);
+    }
+
 }
 
 function initialize() {
@@ -82,6 +95,7 @@ function httpGet(theUrl, val)
 // Sets the map on all markers in the array.
 function setAllMap(map) {
     for (var i = 0; i < markers.length; i++) {
+        markers[i].icon = null;
         markers[i].setMap(map);
     }
 }
@@ -108,7 +122,10 @@ function clearData(){
 
 $('.maptype').dropdown({
     onChange: function(val){
-        if(val == 1 && maptype == 0) {
+        if(val == 1 && maptype != 1) {
+            document.getElementById("positive").innerHTML = 0;
+            document.getElementById("negative").innerHTML = 0;
+            document.getElementById("neutral").innerHTML = 0;
             if(heatmap == null) {
                 heatmap = new google.maps.visualization.HeatmapLayer({
                     data: pointArray
@@ -117,10 +134,23 @@ $('.maptype').dropdown({
             heatmap.setMap(map);
             clearMarkers();
             maptype = 1;
-        } else if(val == 0 && maptype == 1){
-            heatmap.setMap(null);
+        } else if(val == 0 && maptype != 0){
+            document.getElementById("positive").innerHTML = 0;
+            document.getElementById("negative").innerHTML = 0;
+            document.getElementById("neutral").innerHTML = 0;
+            console.log(maptype);
+            clearMarkers();
+             if(heatmap != null) {
+                heatmap.setMap(null);
+            }
             showMarkers();
             maptype = 0;
+        } else if(val == 2 && maptype != 2){
+            if (heatmap != null) {
+                heatmap.setMap(null);
+            };
+            clearMarkers();
+            maptype = 2;
         }
     }
 });
@@ -128,6 +158,9 @@ $('.maptype').dropdown({
 $('.keyword').dropdown({
     onChange: function(val){
         if(val != current_key){
+            document.getElementById("positive").innerHTML = 0;
+            document.getElementById("negative").innerHTML = 0;
+            document.getElementById("neutral").innerHTML = 0;
             current_key = "";
             clearData();
             httpGet("/changekeyword?keyword="+val, val);
