@@ -37,7 +37,7 @@ var init_key = watchSymbols[0];
 var queueName = '/350182859835/TweetsQueue';
 
 if (cluster.isMaster) {
-    var count = 5;
+    var count = 4;
     for (var i = 0; i < count; i += 1) {
         cluster.fork();
     }
@@ -221,7 +221,7 @@ if (cluster.isMaster) {
                                 }
                         });
                     }else{
-                        message.payload.sentiment = "positive";
+                        /*message.payload.sentiment = "positive";
 
                         sns.publish({
                             TargetArn:'arn:aws:sns:us-east-1:350182859835:TweetsSentiment',
@@ -230,11 +230,11 @@ if (cluster.isMaster) {
                             function(err,data){
                                 if (err){
                                     console.log("Error sending a message: "+err);
-                                }else{
+                                }else{*/
                                     operate();
                                     //console.log("Sent message: "+data.MessageId);
-                                }
-                        });
+                                //}
+                        //});
                     }
                 });
             }
