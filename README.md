@@ -10,6 +10,10 @@ Demo video: 2nd_demo
 3. SNS topic name: TweetsSentiment,
 SQS queue name: /350182859835/TweetsQueue
 
+screenshots:
+![alt tag](https://github.com/anweiqi/TwitterMap2/blob/master/maptype_options.png)
+![alt tag](https://github.com/anweiqi/TwitterMap2/blob/master/sentiment_plot.png)
+![alt tag](https://github.com/anweiqi/TwitterMap2/blob/master/sentiment_heatmap.png)
 
 First Assignment
 ==========
