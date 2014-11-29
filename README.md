@@ -1,10 +1,17 @@
-Second Version
+2nd Assignment
 ==========
 refer to the link http://twittermap-jiuyangz.elasticbeanstalk.com
+Demo video: 2nd_demo
 
-1. Select the sentiment map in the first dropdown and map and count updates (green for positive, yellow for neutral, red for negative)  
+1. Add another section showing the tweets number of different sentiment (green for positive, yellow for neutral, red for negative), updateated in real time.
 
-TwitterMap
+2. In the “Map Type” Dropdown menu, add another four options: “Sentiment Plot”, “Positive HeatMap”, “Negative HeatMap” and “Neutral HeatMap”, showing the corresponding map respectively. In the “Sentiment Plot”, we show the positive tweets in green markers, negative in red markers and neutral in yellow markers. All of the options are updated in real time.
+
+3. SNS topic name: TweetsSentiment,
+SQS queue name: /350182859835/TweetsQueue
+
+
+First Assignment
 ==========
 
 Environment/Introduction:
